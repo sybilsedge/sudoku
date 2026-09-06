@@ -67,6 +67,8 @@ npm run preview
 npm run deploy
 ```
 
+For detailed configuration, API token permissions, and CI/CD pipelines, see the [Deployment Runbook](DEPLOYMENT.md).
+
 ## License
 
 This project is licensed under the GNU General Public License v2.0 (GPL-2.0). See [LICENSE.md](LICENSE.md) for details.
