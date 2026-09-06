@@ -68,4 +68,5 @@ npm run deploy
 ```
 
 ## License
-GPL-2.0 / MIT
+
+This project is licensed under the GNU General Public License v2.0 (GPL-2.0). See [LICENSE.md](LICENSE.md) for details.
