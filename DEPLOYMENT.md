@@ -46,16 +46,26 @@ For automated deploys or CI/CD pipelines, expose the following environment varia
 
 ---
 
-## 4. Initial Project Creation
+## 4. Deployment Methods
 
-Before your first deployment, the Pages project container must exist in your Cloudflare account.
+Cloudflare Pages supports two distinct deployment models:
+1. **Native Git Integration (Recommended)**: Cloudflare connects directly to GitHub. Whenever you `git push` to `main`, Cloudflare automatically runs the build and deploys. No API tokens or Wrangler CLI commands needed.
+2. **Direct Upload (CLI / Manual)**: Built locally and uploaded via `wrangler pages deploy dist`.
 
-Run this command once:
-```bash
-npx wrangler pages project create sudoku-pwa --production-branch main
-```
+---
 
-*(This has already been completed for the default `sudoku-pwa` deployment).*
+## 5. Setting Up Native Git Integration (Recommended)
+
+1. In the **[Cloudflare Dashboard](https://dash.cloudflare.com/)**, navigate to **Workers & Pages** → **Create application** → **Pages** tab → **Connect to Git**.
+2. Select your GitHub account and choose the repository `sybilsedge/sudoku`.
+3. Configure the build settings:
+   - **Project Name**: `sudoku-pwa` (or your preferred name)
+   - **Production Branch**: `main`
+   - **Framework Preset**: `Vite`
+   - **Build Command**: `npm run build`
+   - **Build Output Directory**: `dist`
+   - *(Note: Do NOT set a custom deploy command; Cloudflare automatically serves the build output directory).*
+4. Click **Save and Deploy**. Cloudflare will complete your initial deployment and hook up automatic builds on every future push.
 
 ---
 
