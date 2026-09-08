@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSudoku } from './hooks/useSudoku';
+import { applyTheme } from './utils/storage';
 import { Header } from './components/Header';
 import { Board } from './components/Board';
 import { Controls } from './components/Controls';
@@ -35,6 +36,7 @@ export default function App() {
     handleCellClick,
     handleKeypadDigit,
     eraseCell,
+    autoFillNotes,
     undo,
     redo,
     cycleNoteMode,
@@ -42,6 +44,15 @@ export default function App() {
   } = useSudoku();
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+  // Synchronize theme attribute on mount and setting change
+  useEffect(() => {
+    applyTheme(settings.theme || 'dark');
+  }, [settings.theme]);
+
+  const toggleTheme = () => {
+    updateSettings({ theme: settings.theme === 'light' ? 'dark' : 'light' });
+  };
 
   // Keyboard navigation & inputs
   useEffect(() => {
@@ -123,6 +134,13 @@ export default function App() {
         return;
       }
 
+      // Auto-fill candidate notes shortcut
+      if (key === 'a' || key === 'A') {
+        e.preventDefault();
+        autoFillNotes();
+        return;
+      }
+
       // Toggle input mode
       if (key === 'm' || key === 'M') {
         e.preventDefault();
@@ -149,6 +167,7 @@ export default function App() {
     redo,
     handleKeypadDigit,
     eraseCell,
+    autoFillNotes,
     setSelectedCellIndex,
     cycleNoteMode,
     setNoteMode,
@@ -157,17 +176,19 @@ export default function App() {
   ]);
 
   return (
-    <div className="flex flex-col min-h-screen min-h-[100dvh] bg-white text-slate-900 justify-between">
+    <div className="flex flex-col min-h-screen min-h-[100dvh] justify-between selection:bg-cyan-500/30">
       {/* Top Header */}
       <Header
         difficulty={difficulty}
         timerSeconds={timerSeconds}
         isPaused={isPaused}
         isLoading={isLoading}
+        theme={settings.theme || 'dark'}
         onSelectDifficulty={startNewGame}
         onTogglePause={() => setIsPaused((prev) => !prev)}
         onRestart={restartCurrentPuzzle}
         onOpenSettings={() => setIsSettingsOpen(true)}
+        onToggleTheme={toggleTheme}
       />
 
       {/* Main Board Area */}
@@ -193,6 +214,7 @@ export default function App() {
           onUndo={undo}
           onRedo={redo}
           onErase={() => eraseCell()}
+          onAutoFillNotes={autoFillNotes}
           onSelectNoteMode={setNoteMode}
           onToggleInputMode={() =>
             setInputMode((prev) => (prev === 'cell-first' ? 'digit-first' : 'cell-first'))

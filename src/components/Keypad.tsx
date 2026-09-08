@@ -24,11 +24,15 @@ export const Keypad: React.FC<KeypadProps> = ({
           const isComplete = count >= 9;
           const isSelected = inputMode === 'digit-first' && selectedDigit === digit;
 
-          let btnStyles = 'bg-slate-50 border-slate-200 text-slate-900 hover:bg-slate-100 active:bg-slate-200';
+          let btnStyles =
+            'blueprint-border bg-black/40 backdrop-blur-sm text-slate-100 hover:border-cyan-400 hover:text-cyan-200 hover:shadow-[0_0_15px_rgba(0,255,255,0.3)]';
+
           if (isSelected) {
-            btnStyles = 'bg-blue-600 border-blue-700 text-white shadow-md ring-2 ring-blue-300';
+            btnStyles =
+              'neon-border bg-cyan-500/25 text-cyan-100 shadow-[0_0_18px_rgba(0,255,255,0.45)] ring-1 ring-cyan-300';
           } else if (isComplete) {
-            btnStyles = 'bg-slate-100/60 border-slate-100 text-slate-300 pointer-events-auto';
+            btnStyles =
+              'border border-cyan-500/10 bg-black/20 text-slate-600 opacity-40 shadow-none';
           }
 
           return (
@@ -36,10 +40,18 @@ export const Keypad: React.FC<KeypadProps> = ({
               key={digit}
               onClick={() => onDigitClick(digit)}
               aria-label={`Digit ${digit}, ${9 - count} remaining`}
-              className={`flex flex-col items-center justify-center py-2 sm:py-3 rounded-lg border text-xl sm:text-2xl font-bold tabular-nums transition-all select-none touch-manipulation active:scale-95 ${btnStyles}`}
+              className={`flex flex-col items-center justify-center py-2 sm:py-3 rounded-lg font-tech text-xl sm:text-2xl font-bold tabular-nums transition-all select-none touch-manipulation active:scale-95 ${btnStyles}`}
             >
               <span>{digit}</span>
-              <span className={`text-[9px] sm:text-[10px] font-medium leading-none mt-0.5 ${isSelected ? 'text-blue-100' : isComplete ? 'text-slate-300' : 'text-slate-400'}`}>
+              <span
+                className={`font-tech text-[9px] sm:text-[10px] font-semibold leading-none mt-0.5 ${
+                  isSelected
+                    ? 'text-cyan-100'
+                    : isComplete
+                    ? 'text-neon font-bold'
+                    : 'text-cyan-400/80'
+                }`}
+              >
                 {isComplete ? '✓' : 9 - count}
               </span>
             </button>

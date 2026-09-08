@@ -12,6 +12,7 @@
     "pages:dev": "wrangler pages dev dist"
   },
   "dependencies": {
+    "@sybilsedge/blueprint-design": "github:sybilsedge/blueprint-design",
     "canvas-confetti": "^1.9.4",
     "lucide-react": "^1.41.0",
     "qqwing": "^1.3.4",
