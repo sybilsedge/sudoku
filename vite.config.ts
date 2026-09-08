@@ -2,25 +2,8 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
-import { fileURLToPath } from 'url'
-import path from 'path'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
 // https://vite.dev/config/
 export default defineConfig({
-  resolve: {
-    alias: {
-      '@sybilsedge/blueprint-design/css': path.resolve(__dirname, '../blueprint-design/src/index.css'),
-      '@sybilsedge/blueprint-design/tailwind-v4': path.resolve(__dirname, '../blueprint-design/src/tailwind-v4.css'),
-      '@sybilsedge/blueprint-design/variables': path.resolve(__dirname, '../blueprint-design/src/variables.css'),
-      '@sybilsedge/blueprint-design/utilities': path.resolve(__dirname, '../blueprint-design/src/utilities.css'),
-      '@sybilsedge/blueprint-design/fonts': path.resolve(__dirname, '../blueprint-design/src/fonts.css'),
-      '@sybilsedge/blueprint-design/tokens': path.resolve(__dirname, '../blueprint-design/src/tokens.json'),
-      '@sybilsedge/blueprint-design': path.resolve(__dirname, '../blueprint-design/src'),
-    },
-  },
   plugins: [
     react(),
     tailwindcss(),
