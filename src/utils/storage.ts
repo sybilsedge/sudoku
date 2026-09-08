@@ -11,6 +11,7 @@ export interface SavedGame {
   currentValues: number[];
   cornerNotes: number[][];
   centerNotes: number[][];
+  notesLocked?: boolean[];
   history: Move[];
   redoStack: Move[];
   timerSeconds: number;
@@ -25,6 +26,7 @@ export interface UserSettings {
   highlightCrosshairs: boolean;
   highlightDuplicates: boolean;
   autoEraseNotes: boolean;
+  autoCandidateMode: boolean;
 }
 
 export const defaultSettings: UserSettings = {
@@ -32,6 +34,7 @@ export const defaultSettings: UserSettings = {
   highlightCrosshairs: true,
   highlightDuplicates: true,
   autoEraseNotes: true,
+  autoCandidateMode: false,
 };
 
 export const defaultStats: GameStats = {

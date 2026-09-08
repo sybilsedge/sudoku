@@ -35,6 +35,7 @@ export default function App() {
     handleCellClick,
     handleKeypadDigit,
     eraseCell,
+    autoFillNotes,
     undo,
     redo,
     cycleNoteMode,
@@ -123,6 +124,13 @@ export default function App() {
         return;
       }
 
+      // Auto-fill candidate notes shortcut
+      if (key === 'a' || key === 'A') {
+        e.preventDefault();
+        autoFillNotes();
+        return;
+      }
+
       // Toggle input mode
       if (key === 'm' || key === 'M') {
         e.preventDefault();
@@ -149,6 +157,7 @@ export default function App() {
     redo,
     handleKeypadDigit,
     eraseCell,
+    autoFillNotes,
     setSelectedCellIndex,
     cycleNoteMode,
     setNoteMode,
@@ -193,6 +202,7 @@ export default function App() {
           onUndo={undo}
           onRedo={redo}
           onErase={() => eraseCell()}
+          onAutoFillNotes={autoFillNotes}
           onSelectNoteMode={setNoteMode}
           onToggleInputMode={() =>
             setInputMode((prev) => (prev === 'cell-first' ? 'digit-first' : 'cell-first'))

@@ -21,8 +21,9 @@ import {
   loadSettings,
   type UserSettings,
 } from '../utils/storage';
+import { getCellCandidates } from '../utils/candidates';
 
-function createCellsFromPuzzle(puzzle: number[], solution: number[]): CellData[] {
+function createCellsFromPuzzle(puzzle: number[], solution: number[], autoCandidate = false): CellData[] {
   const cells: CellData[] = [];
   for (let i = 0; i < 81; i++) {
     const row = Math.floor(i / 9);
@@ -38,10 +39,20 @@ function createCellsFromPuzzle(puzzle: number[], solution: number[]): CellData[]
       solution: solution[i],
       cornerNotes: [],
       centerNotes: [],
+      notesLocked: false,
       isConflict: false,
       isError: false,
     });
   }
+
+  if (autoCandidate) {
+    for (let i = 0; i < 81; i++) {
+      if (cells[i].value === 0) {
+        cells[i].cornerNotes = getCellCandidates(cells, i);
+      }
+    }
+  }
+
   return cells;
 }
 
@@ -65,6 +76,45 @@ export function useSudoku() {
   const [showVictoryModal, setShowVictoryModal] = useState<boolean>(false);
 
   const timerRef = useRef<number | null>(null);
+
+  // Start new game
+  const startNewGame = useCallback(async (newDiff: Difficulty) => {
+    setIsLoading(true);
+    setIsCompleted(false);
+    setShowVictoryModal(false);
+    setIsPaused(false);
+    setTimerSeconds(0);
+    setHistory([]);
+    setRedoStack([]);
+    setSelectedCellIndex(0);
+    setSelectedDigit(null);
+    setDifficulty(newDiff);
+
+    try {
+      const data = await generatorClient.generate(newDiff);
+      const newCells = createCellsFromPuzzle(data.puzzle, data.solution, settings.autoCandidateMode);
+      setGivens(data.puzzle);
+      setSolution(data.solution);
+      setCells(recalculateConflicts(newCells, settings.autoCheckErrors));
+
+      // Update played stats
+      setStats((prev) => {
+        const next = {
+          ...prev,
+          [newDiff]: {
+            ...prev[newDiff],
+            played: prev[newDiff].played + 1,
+          },
+        };
+        saveStats(next);
+        return next;
+      });
+    } catch (err) {
+      console.error('Failed to generate new game:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [settings.autoCheckErrors, settings.autoCandidateMode]);
 
   // Initialize game: try loading from storage, else generate new
   useEffect(() => {
@@ -93,6 +143,7 @@ export function useSudoku() {
           solution: saved.solution[i],
           cornerNotes: saved.cornerNotes?.[i] || [],
           centerNotes: saved.centerNotes?.[i] || [],
+          notesLocked: saved.notesLocked?.[i] || false,
           isConflict: false,
           isError: false,
         });
@@ -102,7 +153,7 @@ export function useSudoku() {
     } else {
       startNewGame('medium');
     }
-  }, []);
+  }, [settings.autoCheckErrors, startNewGame]);
 
   // Timer interval
   useEffect(() => {
@@ -131,6 +182,7 @@ export function useSudoku() {
       currentValues: cells.map((c) => c.value),
       cornerNotes: cells.map((c) => c.cornerNotes),
       centerNotes: cells.map((c) => c.centerNotes),
+      notesLocked: cells.map((c) => !!c.notesLocked),
       history,
       redoStack,
       timerSeconds,
@@ -141,56 +193,17 @@ export function useSudoku() {
     });
   }, [cells, difficulty, givens, solution, history, redoStack, timerSeconds, isCompleted, inputMode, noteMode, isLoading]);
 
-  // Start new game
-  const startNewGame = useCallback(async (newDiff: Difficulty) => {
-    setIsLoading(true);
-    setIsCompleted(false);
-    setShowVictoryModal(false);
-    setIsPaused(false);
-    setTimerSeconds(0);
-    setHistory([]);
-    setRedoStack([]);
-    setSelectedCellIndex(0);
-    setSelectedDigit(null);
-    setDifficulty(newDiff);
-
-    try {
-      const data = await generatorClient.generate(newDiff);
-      const newCells = createCellsFromPuzzle(data.puzzle, data.solution);
-      setGivens(data.puzzle);
-      setSolution(data.solution);
-      setCells(recalculateConflicts(newCells, settings.autoCheckErrors));
-
-      // Update played stats
-      setStats((prev) => {
-        const next = {
-          ...prev,
-          [newDiff]: {
-            ...prev[newDiff],
-            played: prev[newDiff].played + 1,
-          },
-        };
-        saveStats(next);
-        return next;
-      });
-    } catch (err) {
-      console.error('Failed to generate new game:', err);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [settings.autoCheckErrors]);
-
   // Restart current puzzle
   const restartCurrentPuzzle = useCallback(() => {
     if (givens.length !== 81 || solution.length !== 81) return;
-    const newCells = createCellsFromPuzzle(givens, solution);
+    const newCells = createCellsFromPuzzle(givens, solution, settings.autoCandidateMode);
     setCells(recalculateConflicts(newCells, settings.autoCheckErrors));
     setHistory([]);
     setRedoStack([]);
     setTimerSeconds(0);
     setIsCompleted(false);
     setShowVictoryModal(false);
-  }, [givens, solution, settings.autoCheckErrors]);
+  }, [givens, solution, settings.autoCheckErrors, settings.autoCandidateMode]);
 
   // Check victory condition
   const checkVictory = useCallback((updatedCells: CellData[], sol: number[]) => {
@@ -251,6 +264,7 @@ export function useSudoku() {
       value: targetCell.value,
       cornerNotes: [...targetCell.cornerNotes],
       centerNotes: [...targetCell.centerNotes],
+      notesLocked: targetCell.notesLocked,
     });
 
     let newCells = [...cells];
@@ -264,6 +278,7 @@ export function useSudoku() {
         value: newValue,
         cornerNotes: [],
         centerNotes: [],
+        notesLocked: false,
       };
 
       afterSnapshots.push({
@@ -271,10 +286,11 @@ export function useSudoku() {
         value: newValue,
         cornerNotes: [],
         centerNotes: [],
+        notesLocked: false,
       });
 
-      // Automatic pencilmark erasure if enabled
-      if (newValue !== 0 && settings.autoEraseNotes) {
+      // Automatic pencilmark erasure / pruning if enabled
+      if (newValue !== 0 && (settings.autoEraseNotes || settings.autoCandidateMode)) {
         const peers = getRelatedCellIndices(targetIndex);
         for (const peerIdx of peers) {
           const peer = newCells[peerIdx];
@@ -287,6 +303,7 @@ export function useSudoku() {
               value: peer.value,
               cornerNotes: [...peer.cornerNotes],
               centerNotes: [...peer.centerNotes],
+              notesLocked: peer.notesLocked,
             });
 
             const newCorner = peer.cornerNotes.filter((n) => n !== newValue);
@@ -303,9 +320,17 @@ export function useSudoku() {
               value: peer.value,
               cornerNotes: newCorner,
               centerNotes: newCenter,
+              notesLocked: peer.notesLocked,
             });
           }
         }
+      } else if (newValue === 0 && settings.autoCandidateMode) {
+        const candidates = getCellCandidates(newCells, targetIndex);
+        newCells[targetIndex] = {
+          ...newCells[targetIndex],
+          cornerNotes: candidates,
+        };
+        afterSnapshots[0].cornerNotes = candidates;
       }
     } else if (targetNoteMode === 'corner') {
       // Toggle in corner notes
@@ -318,6 +343,7 @@ export function useSudoku() {
         ...targetCell,
         value: 0, // entering notes clears placed value
         cornerNotes: updatedNotes,
+        notesLocked: true, // player manually edited notes
       };
 
       afterSnapshots.push({
@@ -325,6 +351,7 @@ export function useSudoku() {
         value: 0,
         cornerNotes: updatedNotes,
         centerNotes: [...targetCell.centerNotes],
+        notesLocked: true,
       });
     } else if (targetNoteMode === 'center') {
       // Toggle in center notes
@@ -337,6 +364,7 @@ export function useSudoku() {
         ...targetCell,
         value: 0,
         centerNotes: updatedNotes,
+        notesLocked: true, // player manually edited notes
       };
 
       afterSnapshots.push({
@@ -344,6 +372,7 @@ export function useSudoku() {
         value: 0,
         cornerNotes: [...targetCell.cornerNotes],
         centerNotes: updatedNotes,
+        notesLocked: true,
       });
     }
 
@@ -360,7 +389,7 @@ export function useSudoku() {
 
     // Check victory
     checkVictory(validatedCells, solution);
-  }, [cells, isCompleted, settings.autoCheckErrors, settings.autoEraseNotes, solution, checkVictory]);
+  }, [cells, isCompleted, settings.autoCheckErrors, settings.autoEraseNotes, settings.autoCandidateMode, solution, checkVictory]);
 
   // Erase cell content (value and notes)
   const eraseCell = useCallback((targetIndex?: number) => {
@@ -376,13 +405,7 @@ export function useSudoku() {
       value: cell.value,
       cornerNotes: [...cell.cornerNotes],
       centerNotes: [...cell.centerNotes],
-    };
-
-    const after: CellSnapshot = {
-      index: idx,
-      value: 0,
-      cornerNotes: [],
-      centerNotes: [],
+      notesLocked: cell.notesLocked,
     };
 
     const newCells = [...cells];
@@ -391,13 +414,87 @@ export function useSudoku() {
       value: 0,
       cornerNotes: [],
       centerNotes: [],
+      notesLocked: false,
+    };
+
+    if (settings.autoCandidateMode) {
+      newCells[idx].cornerNotes = getCellCandidates(newCells, idx);
+    }
+
+    const after: CellSnapshot = {
+      index: idx,
+      value: 0,
+      cornerNotes: [...newCells[idx].cornerNotes],
+      centerNotes: [],
+      notesLocked: false,
     };
 
     const validatedCells = recalculateConflicts(newCells, settings.autoCheckErrors);
     setCells(validatedCells);
     setHistory((prev) => [...prev, { before: [before], after: [after] }]);
     setRedoStack([]);
-  }, [cells, isCompleted, selectedCellIndex, settings.autoCheckErrors]);
+  }, [cells, isCompleted, selectedCellIndex, settings.autoCheckErrors, settings.autoCandidateMode]);
+
+  // Auto-fill candidates for all empty cells that aren't manually locked
+  const autoFillNotes = useCallback((overrideManualLocks = false) => {
+    if (isCompleted || cells.length !== 81) return;
+
+    const beforeSnapshots: CellSnapshot[] = [];
+    const afterSnapshots: CellSnapshot[] = [];
+    const newCells = [...cells];
+    let hasChanges = false;
+
+    for (let i = 0; i < 81; i++) {
+      const cell = newCells[i];
+      if (cell.value !== 0 || cell.given) continue;
+      if (!overrideManualLocks && cell.notesLocked) continue;
+
+      const candidates = getCellCandidates(newCells, i);
+
+      const sameCorner =
+        cell.cornerNotes.length === candidates.length &&
+        cell.cornerNotes.every((val, idx) => val === candidates[idx]);
+
+      if (sameCorner && cell.centerNotes.length === 0) {
+        continue;
+      }
+
+      hasChanges = true;
+      beforeSnapshots.push({
+        index: i,
+        value: cell.value,
+        cornerNotes: [...cell.cornerNotes],
+        centerNotes: [...cell.centerNotes],
+        notesLocked: cell.notesLocked,
+      });
+
+      newCells[i] = {
+        ...cell,
+        cornerNotes: candidates,
+        centerNotes: [],
+        notesLocked: false,
+      };
+
+      afterSnapshots.push({
+        index: i,
+        value: cell.value,
+        cornerNotes: candidates,
+        centerNotes: [],
+        notesLocked: false,
+      });
+    }
+
+    if (hasChanges) {
+      setCells(newCells);
+      const move: Move = {
+        description: 'Auto-fill candidate notes',
+        before: beforeSnapshots,
+        after: afterSnapshots,
+      };
+      setHistory((prev) => [...prev, move]);
+      setRedoStack([]);
+    }
+  }, [cells, isCompleted]);
 
   // Handle cell click depending on input mode
   const handleCellClick = useCallback((index: number) => {
@@ -442,6 +539,7 @@ export function useSudoku() {
         value: snap.value,
         cornerNotes: [...snap.cornerNotes],
         centerNotes: [...snap.centerNotes],
+        notesLocked: snap.notesLocked ?? false,
       };
     }
 
@@ -465,6 +563,7 @@ export function useSudoku() {
         value: snap.value,
         cornerNotes: [...snap.cornerNotes],
         centerNotes: [...snap.centerNotes],
+        notesLocked: snap.notesLocked ?? false,
       };
     }
 
@@ -489,7 +588,22 @@ export function useSudoku() {
     setSettings((prev) => {
       const updated = { ...prev, ...newSettings };
       saveSettings(updated);
-      setCells((currentCells) => recalculateConflicts(currentCells, updated.autoCheckErrors));
+      setCells((currentCells) => {
+        let nextCells = recalculateConflicts(currentCells, updated.autoCheckErrors);
+        if (newSettings.autoCandidateMode === true && !prev.autoCandidateMode) {
+          nextCells = nextCells.map((cell, idx) => {
+            if (cell.value === 0 && !cell.given && !cell.notesLocked) {
+              return {
+                ...cell,
+                cornerNotes: getCellCandidates(nextCells, idx),
+                centerNotes: [],
+              };
+            }
+            return cell;
+          });
+        }
+        return nextCells;
+      });
       return updated;
     });
   }, []);
@@ -535,6 +649,7 @@ export function useSudoku() {
     handleCellClick,
     handleKeypadDigit,
     eraseCell,
+    autoFillNotes,
     undo,
     redo,
     cycleNoteMode,

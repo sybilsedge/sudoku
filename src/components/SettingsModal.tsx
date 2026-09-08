@@ -124,6 +124,28 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               />
             </button>
           </div>
+
+          {/* Auto-Candidate Mode */}
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-sm font-semibold text-slate-900">Auto-Candidate Mode</div>
+              <div className="text-xs text-slate-500">Automatically calculate and populate pencilmarks</div>
+            </div>
+            <button
+              onClick={() => onUpdateSettings({ autoCandidateMode: !settings.autoCandidateMode })}
+              role="switch"
+              aria-checked={settings.autoCandidateMode}
+              className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors ${
+                settings.autoCandidateMode ? 'bg-blue-600' : 'bg-slate-300'
+              }`}
+            >
+              <div
+                className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
+                  settings.autoCandidateMode ? 'translate-x-6' : 'translate-x-0'
+                }`}
+              />
+            </button>
+          </div>
         </div>
 
         {/* Statistics section */}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Undo2, Redo2, Eraser, Pen, Edit3, Type, Touchpad, MousePointerClick } from 'lucide-react';
+import { Undo2, Redo2, Eraser, Sparkles, Pen, Edit3, Type, Touchpad, MousePointerClick } from 'lucide-react';
 import type { InputMode, NoteMode } from '../types/sudoku';
 
 interface ControlsProps {
@@ -10,6 +10,7 @@ interface ControlsProps {
   onUndo: () => void;
   onRedo: () => void;
   onErase: () => void;
+  onAutoFillNotes: () => void;
   onSelectNoteMode: (mode: NoteMode) => void;
   onToggleInputMode: () => void;
 }
@@ -22,14 +23,15 @@ export const Controls: React.FC<ControlsProps> = ({
   onUndo,
   onRedo,
   onErase,
+  onAutoFillNotes,
   onSelectNoteMode,
   onToggleInputMode,
 }) => {
   return (
     <div className="w-full max-w-[480px] mx-auto px-2 sm:px-4 py-2">
-      {/* Top action bar: Undo, Redo, Erase, Input Mode toggle */}
+      {/* Top action bar: Undo, Redo, Erase, Auto-Fill Notes, Input Mode toggle */}
       <div className="flex items-center justify-between gap-1 sm:gap-2 mb-2">
-        <div className="flex items-center gap-1 sm:gap-2">
+        <div className="flex items-center gap-1 sm:gap-1.5">
           <button
             onClick={onUndo}
             disabled={!canUndo}
@@ -57,6 +59,16 @@ export const Controls: React.FC<ControlsProps> = ({
             title="Erase (Backspace/Del)"
           >
             <Eraser className="w-4 h-4 sm:w-5 sm:h-5" />
+          </button>
+
+          <button
+            onClick={onAutoFillNotes}
+            aria-label="Auto-fill candidate notes"
+            className="flex items-center gap-1 px-2 py-2 sm:px-2.5 rounded-lg text-slate-700 hover:bg-amber-50 active:bg-amber-100 hover:text-amber-800 hover:border-amber-300 transition-colors border border-slate-200"
+            title="Auto-Fill Notes (A)"
+          >
+            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500" />
+            <span className="hidden sm:inline text-xs font-semibold">Auto Notes</span>
           </button>
         </div>
 

@@ -9,6 +9,7 @@ export interface CellSnapshot {
   value: number;
   cornerNotes: number[];
   centerNotes: number[];
+  notesLocked?: boolean;
 }
 
 export interface Move {
@@ -26,6 +27,7 @@ export interface CellData {
   solution: number;
   cornerNotes: number[]; // numbers 1-9
   centerNotes: number[]; // numbers 1-9
+  notesLocked?: boolean; // true if player manually entered/edited notes
   isConflict: boolean; // conflicts with another cell in row/col/box
   isError: boolean; // conflicts with puzzle solution (when check enabled)
 }
