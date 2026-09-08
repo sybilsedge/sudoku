@@ -26,7 +26,7 @@ export const VictoryModal: React.FC<VictoryModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="blueprint-border bg-[#0e1114]/95 max-w-sm w-full p-6 text-center shadow-[0_0_40px_rgba(0,255,255,0.25)] rounded-xl">
+      <div data-theme="dark" className="blueprint-border bg-[#0e1114] max-w-sm w-full p-6 text-center shadow-[0_0_40px_rgba(0,255,255,0.25)] rounded-xl text-slate-100">
         <div className="neon-border bg-emerald-500/10 text-neon w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center shadow-[0_0_24px_rgba(57,255,20,0.3)]">
           <Trophy className="w-8 h-8" />
         </div>

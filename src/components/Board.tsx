@@ -33,8 +33,20 @@ export const Board: React.FC<BoardProps> = ({
 
   return (
     <div className="w-full max-w-[480px] mx-auto px-2 sm:px-4">
-      <div className="blueprint-border bg-black/45 backdrop-blur-md rounded-lg p-1 sm:p-1.5 shadow-[0_0_28px_rgba(0,255,255,0.12)]">
-        <div className="grid grid-cols-9 grid-rows-9 w-full aspect-square border border-cyan-500/40 rounded-sm overflow-hidden bg-black/30">
+      <div
+        className="rounded-lg p-1 sm:p-1.5 backdrop-blur-md transition-all shadow-[0_0_28px_rgba(0,255,255,0.12)] [data-theme='light']:shadow-[0_4px_24px_rgba(29,78,216,0.10)]"
+        style={{
+          backgroundColor: 'var(--sudoku-board-card-bg)',
+          border: '1px solid var(--sudoku-board-card-border)',
+        }}
+      >
+        <div
+          className="grid grid-cols-9 grid-rows-9 w-full aspect-square rounded-sm overflow-hidden transition-colors"
+          style={{
+            backgroundColor: 'var(--sudoku-grid-bg)',
+            border: '2px solid var(--sudoku-border-block)',
+          }}
+        >
           {cells.map((cell, idx) => {
             const isSelected = idx === selectedCellIndex;
 

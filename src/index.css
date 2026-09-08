@@ -7,34 +7,40 @@
 @layer base {
   :root {
     --sudoku-bg: var(--bg-charcoal, #0a0a0a);
-    --sudoku-board-border: var(--blueprint-cyan, #00ffff);
-    --sudoku-subgrid-border: rgba(0, 255, 255, 0.45);
-    --sudoku-cell-border: rgba(0, 255, 255, 0.16);
-    --sudoku-selected: rgba(0, 255, 255, 0.22);
-    --sudoku-crosshair: rgba(0, 255, 255, 0.05);
-    --sudoku-match: rgba(0, 255, 255, 0.14);
-    --sudoku-error: rgba(239, 68, 68, 0.22);
-    --sudoku-error-text: #f87171;
-    --sudoku-given-text: #f1f5f9;
-    --sudoku-user-text: var(--blueprint-cyan, #00ffff);
-    --sudoku-note-text: rgba(103, 232, 249, 0.75);
-    --sudoku-center-note-text: var(--neon-green, #39ff14);
+    --sudoku-board-card-bg: rgba(0, 0, 0, 0.45);
+    --sudoku-board-card-border: var(--blueprint-border, rgba(0, 255, 255, 0.35));
+    --sudoku-grid-bg: rgba(0, 0, 0, 0.35);
+    --sudoku-cell-bg: transparent;
+    --sudoku-border-block: rgba(0, 255, 255, 0.8);
+    --sudoku-border-cell: rgba(0, 255, 255, 0.18);
+    --sudoku-cell-selected: rgba(0, 255, 255, 0.28);
+    --sudoku-cell-crosshair: rgba(0, 255, 255, 0.06);
+    --sudoku-cell-match: rgba(0, 255, 255, 0.18);
+    --sudoku-cell-error: rgba(239, 68, 68, 0.35);
+    --sudoku-text-given: #f1f5f9;
+    --sudoku-text-user: #67e8f9;
+    --sudoku-text-error: #f87171;
+    --sudoku-text-notes: rgba(103, 232, 249, 0.85);
+    --sudoku-text-center: #39ff14;
   }
 
   [data-theme="light"] {
-    --sudoku-bg: var(--bg-charcoal, #f0f4ff);
-    --sudoku-board-border: var(--blueprint-cyan, #1d4ed8);
-    --sudoku-subgrid-border: rgba(29, 78, 216, 0.40);
-    --sudoku-cell-border: rgba(29, 78, 216, 0.16);
-    --sudoku-selected: rgba(29, 78, 216, 0.18);
-    --sudoku-crosshair: rgba(29, 78, 216, 0.05);
-    --sudoku-match: rgba(29, 78, 216, 0.12);
-    --sudoku-error: rgba(239, 68, 68, 0.15);
-    --sudoku-error-text: #dc2626;
-    --sudoku-given-text: #0f172a;
-    --sudoku-user-text: #1d4ed8;
-    --sudoku-note-text: rgba(29, 78, 216, 0.75);
-    --sudoku-center-note-text: #1d4ed8;
+    --sudoku-bg: #f0f4ff;
+    --sudoku-board-card-bg: #ffffff;
+    --sudoku-board-card-border: rgba(29, 78, 216, 0.28);
+    --sudoku-grid-bg: #ffffff;
+    --sudoku-cell-bg: #ffffff;
+    --sudoku-border-block: #1d4ed8;
+    --sudoku-border-cell: #bfdbfe; /* delicate light blueprint hairline */
+    --sudoku-cell-selected: #dbeafe; /* light soft blue */
+    --sudoku-cell-crosshair: #f0f7ff; /* subtle row/col tint */
+    --sudoku-cell-match: #e0edff;
+    --sudoku-cell-error: #fee2e2;
+    --sudoku-text-given: #0f172a; /* crisp high-contrast dark slate */
+    --sudoku-text-user: #1d4ed8; /* cobalt blue */
+    --sudoku-text-error: #dc2626;
+    --sudoku-text-notes: #2563eb;
+    --sudoku-text-center: #1d4ed8;
   }
 
   html {
@@ -60,6 +66,30 @@
     color: #0f172a;
   }
 }
+
+/* Light mode background grid refinement - softer and lighter */
+[data-theme="light"] .bg-grid {
+  background-image:
+    linear-gradient(rgba(29, 78, 216, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(29, 78, 216, 0.04) 1px, transparent 1px);
+}
+
+/* Persistent dark HUD modal & widget styles */
+[data-theme="dark"] {
+  --blueprint-cyan: #00ffff;
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .text-slate-100 { color: #f8fafc !important; }
+[data-theme="dark"] .text-slate-200 { color: #e2e8f0 !important; }
+[data-theme="dark"] .text-slate-300 { color: #cbd5e1 !important; }
+[data-theme="dark"] .text-slate-400 { color: #94a3b8 !important; }
+[data-theme="dark"] .text-cyan-300 { color: #67e8f9 !important; }
+[data-theme="dark"] .text-cyan-200 { color: #a5f3fc !important; }
+[data-theme="dark"] .text-cyan-400 { color: #38bdf8 !important; }
+[data-theme="dark"] .text-neon { color: #39ff14 !important; }
+[data-theme="dark"] .bg-black\/40 { background-color: rgba(0, 0, 0, 0.45) !important; }
+[data-theme="dark"] .bg-black\/50 { background-color: rgba(0, 0, 0, 0.55) !important; }
 
 /* Tabular numbers for clock, score, and coordinates */
 .tabular-nums {

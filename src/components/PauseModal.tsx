@@ -11,7 +11,7 @@ export const PauseModal: React.FC<PauseModalProps> = ({ isOpen, onResume }) => {
 
   return (
     <div className="fixed inset-0 z-40 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="blueprint-border bg-[#0e1114]/95 max-w-xs w-full p-6 text-center shadow-[0_0_40px_rgba(0,255,255,0.2)] rounded-xl">
+      <div data-theme="dark" className="blueprint-border bg-[#0e1114] max-w-xs w-full p-6 text-center shadow-[0_0_40px_rgba(0,255,255,0.2)] rounded-xl text-slate-100">
         <h3 className="font-orbitron text-xl font-bold tracking-wider text-cyan-300 uppercase mb-2">
           PAUSED
         </h3>
