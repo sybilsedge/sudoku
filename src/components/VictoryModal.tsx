@@ -25,34 +25,34 @@ export const VictoryModal: React.FC<VictoryModalProps> = ({
   const isNewBest = currentDiffStats.bestTime === timeSeconds;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/50 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="bg-white rounded-2xl max-w-sm w-full p-6 text-center shadow-xl border border-slate-200">
-        <div className="w-16 h-16 mx-auto mb-4 bg-amber-100 rounded-full flex items-center justify-center text-amber-600">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-in fade-in duration-200">
+      <div className="blueprint-border bg-[#0e1114]/95 max-w-sm w-full p-6 text-center shadow-[0_0_40px_rgba(0,255,255,0.25)] rounded-xl">
+        <div className="neon-border bg-emerald-500/10 text-neon w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center shadow-[0_0_24px_rgba(57,255,20,0.3)]">
           <Trophy className="w-8 h-8" />
         </div>
 
-        <h2 className="font-puzzle-serif text-2xl font-bold text-slate-900 mb-1">
-          Puzzle Solved!
+        <h2 className="font-orbitron text-xl sm:text-2xl font-bold text-cyan-300 uppercase tracking-widest mb-1 drop-shadow-[0_0_12px_rgba(0,255,255,0.35)]">
+          GRID SOLVED
         </h2>
-        <p className="text-sm text-slate-600 mb-4 capitalize">
-          {difficulty} Puzzle Completed
+        <p className="font-tech text-xs uppercase tracking-wider text-slate-400 mb-4">
+          [ {difficulty.toUpperCase()} MATRIX DECRYPTED ]
         </p>
 
-        <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-6">
-          <div className="text-xs uppercase tracking-wider text-slate-500 font-semibold mb-1">
-            Completion Time
+        <div className="blueprint-border bg-black/40 rounded-xl p-4 mb-6">
+          <div className="font-tech text-xs uppercase tracking-wider text-slate-400 font-semibold mb-1">
+            ELAPSED TIME
           </div>
-          <div className="text-3xl font-bold tabular-nums text-slate-900 mb-2">
+          <div className="font-tech text-3xl font-bold tabular-nums text-cyan-300 mb-2 drop-shadow-[0_0_10px_rgba(0,255,255,0.35)]">
             {formatTime(timeSeconds)}
           </div>
           {isNewBest && (
-            <span className="inline-block bg-amber-100 text-amber-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
-              ★ New Best Time!
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-tech border border-emerald-500/40 bg-emerald-500/10 text-neon shadow-[0_0_12px_rgba(57,255,20,0.3)]">
+              ★ NEW RECORD TELEMETRY
             </span>
           )}
           {currentDiffStats.bestTime !== null && !isNewBest && (
-            <div className="text-xs text-slate-500 mt-1">
-              Best: {formatTime(currentDiffStats.bestTime)}
+            <div className="font-tech text-xs text-slate-400 mt-1">
+              BEST: <span className="text-neon tabular-nums">{formatTime(currentDiffStats.bestTime)}</span>
             </div>
           )}
         </div>
@@ -60,17 +60,17 @@ export const VictoryModal: React.FC<VictoryModalProps> = ({
         <div className="space-y-2">
           <button
             onClick={() => onPlayAgain(difficulty)}
-            className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-semibold transition-colors shadow-sm"
+            className="w-full flex items-center justify-center gap-2 py-3 px-4 border border-cyan-400 bg-cyan-500/20 text-cyan-200 hover:bg-cyan-500/30 hover:border-cyan-300 hover:shadow-[0_0_20px_rgba(0,255,255,0.4)] rounded-lg font-tech text-xs uppercase tracking-wider font-bold transition-all"
           >
-            <span>Play Next {difficulty.toUpperCase()}</span>
+            <span>NEXT {difficulty.toUpperCase()} MATRIX</span>
             <ArrowRight className="w-4 h-4" />
           </button>
 
           <button
             onClick={onClose}
-            className="w-full py-2.5 px-4 text-slate-600 hover:text-slate-900 text-sm font-semibold transition-colors"
+            className="w-full py-2.5 px-4 font-tech text-xs uppercase tracking-wider text-slate-400 hover:text-cyan-300 transition-colors"
           >
-            Review Board
+            INSPECT GRID
           </button>
         </div>
       </div>

@@ -22,27 +22,45 @@ export const Cell: React.FC<CellProps> = React.memo(({
 }) => {
   const { row, col, value, given, cornerNotes, centerNotes, isConflict, isError } = cell;
 
-  // Grid border thickness for 3x3 blocks
-  const borderRight = col % 3 === 2 && col !== 8 ? 'border-r-2 border-r-slate-900' : 'border-r border-r-slate-300';
-  const borderBottom = row % 3 === 2 && row !== 8 ? 'border-b-2 border-b-slate-900' : 'border-b border-b-slate-300';
+  // Grid border thickness for 3x3 blocks and hairline cells
+  const borderRight =
+    col % 3 === 2 && col !== 8
+      ? 'border-r-2 border-r-cyan-400/80'
+      : col !== 8
+      ? 'border-r border-r-cyan-500/20'
+      : '';
 
-  // Compute background color hierarchy: Selected > Conflict/Error > Same Digit > Crosshair > Base
-  let bgColor = 'bg-white';
+  const borderBottom =
+    row % 3 === 2 && row !== 8
+      ? 'border-b-2 border-b-cyan-400/80'
+      : row !== 8
+      ? 'border-b border-b-cyan-500/20'
+      : '';
+
+  // Background hierarchy: Selected > Conflict/Error > Same Digit > Crosshair > Base
+  let bgColor = 'bg-transparent';
+  let extraStyles = '';
 
   if (isError || isConflict) {
-    bgColor = 'bg-red-100';
+    bgColor = 'bg-red-950/45';
+    extraStyles = 'shadow-[inset_0_0_12px_rgba(239,68,68,0.35)]';
   } else if (isSelected) {
-    bgColor = 'bg-[#bbdefb]'; // Distinct selected cell blue
+    bgColor = 'bg-cyan-500/30';
+    extraStyles = 'shadow-[inset_0_0_14px_rgba(0,255,255,0.4),0_0_12px_rgba(0,255,255,0.3)] ring-1 ring-cyan-300 z-10';
   } else if (isSameDigit) {
-    bgColor = 'bg-[#d1e7fd]'; // Same-number matching tint
+    bgColor = 'bg-cyan-500/18';
+    extraStyles = 'shadow-[inset_0_0_8px_rgba(0,255,255,0.2)]';
   } else if (isCrosshair && highlightCrosshairs) {
-    bgColor = 'bg-[#f0f4f9]'; // Soft row/col/box crosshair
+    bgColor = 'bg-cyan-500/6';
   }
 
-  // Text color: Clue/Given is dark slate/black, User entry is royal blue
-  let textColor = given ? 'text-slate-950 font-bold' : 'text-blue-700 font-semibold';
+  // Text color & luminous HUD glow
+  let textColor = given
+    ? 'text-slate-100 font-bold drop-shadow-[0_0_4px_rgba(255,255,255,0.2)]'
+    : 'text-cyan-300 font-bold drop-shadow-[0_0_8px_rgba(0,255,255,0.45)]';
+
   if (isError || isConflict) {
-    textColor = 'text-red-600 font-bold';
+    textColor = 'text-red-400 font-bold drop-shadow-[0_0_8px_rgba(239,68,68,0.6)]';
   }
 
   return (
@@ -51,16 +69,16 @@ export const Cell: React.FC<CellProps> = React.memo(({
       role="button"
       tabIndex={0}
       aria-label={`Row ${row + 1}, Column ${col + 1}${value ? `, Value ${value}` : ''}`}
-      className={`relative flex items-center justify-center cursor-pointer select-none aspect-square transition-colors duration-75 ${borderRight} ${borderBottom} ${bgColor}`}
+      className={`relative flex items-center justify-center cursor-pointer select-none aspect-square transition-all duration-75 ${borderRight} ${borderBottom} ${bgColor} ${extraStyles} hover:bg-cyan-500/10`}
     >
       {value !== 0 ? (
-        <span className={`text-2xl sm:text-3xl tabular-nums leading-none ${textColor}`}>
+        <span className={`font-tech text-2xl sm:text-3xl tabular-nums leading-none ${textColor}`}>
           {value}
         </span>
       ) : (
         <div className="absolute inset-0 p-0.5 pointer-events-none flex flex-col justify-between">
           {/* Corner Notes (candidates placed in perimeter positions) */}
-          <div className="grid grid-cols-3 grid-rows-3 w-full h-full text-[9px] sm:text-[11px] font-medium text-slate-500 leading-none">
+          <div className="grid grid-cols-3 grid-rows-3 w-full h-full font-tech text-[9px] sm:text-[11px] font-semibold text-cyan-400/80 leading-none">
             {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((digit) => {
               const inCorner = cornerNotes.includes(digit);
               return (
@@ -74,7 +92,7 @@ export const Cell: React.FC<CellProps> = React.memo(({
           {/* Center Notes (clustered candidate group) */}
           {centerNotes.length > 0 && cornerNotes.length === 0 && (
             <div className="absolute inset-0 flex items-center justify-center px-1">
-              <span className="text-[10px] sm:text-[12px] font-medium tracking-tight text-slate-600 tabular-nums">
+              <span className="font-tech text-[10px] sm:text-[12px] font-bold tracking-tight text-neon tabular-nums drop-shadow-[0_0_6px_rgba(57,255,20,0.4)]">
                 {centerNotes.join('')}
               </span>
             </div>
@@ -83,7 +101,7 @@ export const Cell: React.FC<CellProps> = React.memo(({
           {/* Both Corner and Center active in same cell */}
           {centerNotes.length > 0 && cornerNotes.length > 0 && (
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <span className="text-[9px] sm:text-[10px] font-bold text-sky-700 bg-sky-100/80 px-0.5 rounded">
+              <span className="font-tech text-[9px] sm:text-[10px] font-bold text-neon bg-black/75 border border-emerald-500/40 px-1 rounded shadow-[0_0_8px_rgba(57,255,20,0.3)]">
                 {centerNotes.join('')}
               </span>
             </div>

@@ -1,40 +1,67 @@
+@import "@sybilsedge/blueprint-design/fonts";
 @import "tailwindcss";
+@import "@sybilsedge/blueprint-design/variables";
+@import "@sybilsedge/blueprint-design/utilities";
+@import "@sybilsedge/blueprint-design/tailwind-v4";
 
 @layer base {
   :root {
-    --sudoku-bg: #ffffff;
-    --sudoku-board-border: #121212;
-    --sudoku-subgrid-border: #333333;
-    --sudoku-cell-border: #bcc3cd;
-    --sudoku-selected: #bbdefb;
-    --sudoku-crosshair: #e8f0fe;
-    --sudoku-match: #d1e7fd;
-    --sudoku-error: #fde8e8;
-    --sudoku-error-text: #e53e3e;
+    --sudoku-bg: var(--bg-charcoal, #0a0a0a);
+    --sudoku-board-border: var(--blueprint-cyan, #00ffff);
+    --sudoku-subgrid-border: rgba(0, 255, 255, 0.45);
+    --sudoku-cell-border: rgba(0, 255, 255, 0.16);
+    --sudoku-selected: rgba(0, 255, 255, 0.22);
+    --sudoku-crosshair: rgba(0, 255, 255, 0.05);
+    --sudoku-match: rgba(0, 255, 255, 0.14);
+    --sudoku-error: rgba(239, 68, 68, 0.22);
+    --sudoku-error-text: #f87171;
+    --sudoku-given-text: #f1f5f9;
+    --sudoku-user-text: var(--blueprint-cyan, #00ffff);
+    --sudoku-note-text: rgba(103, 232, 249, 0.75);
+    --sudoku-center-note-text: var(--neon-green, #39ff14);
+  }
+
+  [data-theme="light"] {
+    --sudoku-bg: var(--bg-charcoal, #f0f4ff);
+    --sudoku-board-border: var(--blueprint-cyan, #1d4ed8);
+    --sudoku-subgrid-border: rgba(29, 78, 216, 0.40);
+    --sudoku-cell-border: rgba(29, 78, 216, 0.16);
+    --sudoku-selected: rgba(29, 78, 216, 0.18);
+    --sudoku-crosshair: rgba(29, 78, 216, 0.05);
+    --sudoku-match: rgba(29, 78, 216, 0.12);
+    --sudoku-error: rgba(239, 68, 68, 0.15);
+    --sudoku-error-text: #dc2626;
     --sudoku-given-text: #0f172a;
     --sudoku-user-text: #1d4ed8;
-    --sudoku-note-text: #475569;
+    --sudoku-note-text: rgba(29, 78, 216, 0.75);
+    --sudoku-center-note-text: #1d4ed8;
   }
 
   html {
-    font-family: 'Libre Franklin', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-family: var(--font-body, 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
     -webkit-tap-highlight-color: transparent;
+    color-scheme: dark;
+  }
+
+  [data-theme="light"] {
+    color-scheme: light;
   }
 
   body {
-    background-color: var(--sudoku-bg);
+    background-color: var(--bg-charcoal, #0a0a0a);
+    color: #e2e8f0;
     margin: 0;
     padding: 0;
     min-height: 100vh;
     min-height: 100dvh;
   }
+
+  [data-theme="light"] body {
+    color: #0f172a;
+  }
 }
 
-/* Custom utility classes */
-.font-puzzle-serif {
-  font-family: 'Playfair Display', Georgia, serif;
-}
-
+/* Tabular numbers for clock, score, and coordinates */
 .tabular-nums {
   font-variant-numeric: tabular-nums;
 }
@@ -46,4 +73,18 @@
 
 .pt-safe {
   padding-top: max(0.5rem, env(safe-area-inset-top));
+}
+
+/* Subtle scanline and pulse effects */
+@keyframes blueprint-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.animate-blueprint-pulse {
+  animation: blueprint-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }

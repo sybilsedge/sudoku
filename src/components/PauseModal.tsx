@@ -10,21 +10,21 @@ export const PauseModal: React.FC<PauseModalProps> = ({ isOpen, onResume }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-40 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl max-w-xs w-full p-6 text-center shadow-xl border border-slate-200">
-        <h3 className="font-puzzle-serif text-xl font-bold text-slate-900 mb-2">
-          Puzzle Paused
+    <div className="fixed inset-0 z-40 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-in fade-in duration-200">
+      <div className="blueprint-border bg-[#0e1114]/95 max-w-xs w-full p-6 text-center shadow-[0_0_40px_rgba(0,255,255,0.2)] rounded-xl">
+        <h3 className="font-orbitron text-xl font-bold tracking-wider text-cyan-300 uppercase mb-2">
+          PAUSED
         </h3>
-        <p className="text-xs text-slate-500 mb-6">
-          Timer is stopped while you are away.
+        <p className="font-tech text-xs text-slate-400 mb-6">
+          [ TELEMETRY & TIMER HALTED ]
         </p>
 
         <button
           onClick={onResume}
-          className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white rounded-xl font-semibold transition-colors shadow-sm"
+          className="w-full flex items-center justify-center gap-2 py-3 px-4 border border-cyan-400 bg-cyan-500/20 text-cyan-200 hover:bg-cyan-500/30 hover:border-cyan-300 hover:shadow-[0_0_20px_rgba(0,255,255,0.4)] rounded-lg font-tech text-xs font-bold uppercase tracking-wider transition-all"
         >
           <Play className="w-4 h-4 fill-current" />
-          <span>Resume Puzzle</span>
+          <span>RESUME EXECUTION</span>
         </button>
       </div>
     </div>

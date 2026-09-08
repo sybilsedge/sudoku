@@ -27,6 +27,7 @@ export interface UserSettings {
   highlightDuplicates: boolean;
   autoEraseNotes: boolean;
   autoCandidateMode: boolean;
+  theme: 'dark' | 'light';
 }
 
 export const defaultSettings: UserSettings = {
@@ -35,7 +36,18 @@ export const defaultSettings: UserSettings = {
   highlightDuplicates: true,
   autoEraseNotes: true,
   autoCandidateMode: false,
+  theme: 'dark',
 };
+
+export function applyTheme(theme: 'dark' | 'light'): void {
+  if (typeof document !== 'undefined') {
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+    }
+  }
+}
 
 export const defaultStats: GameStats = {
   easy: { played: 0, completed: 0, bestTime: null },

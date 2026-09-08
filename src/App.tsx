@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSudoku } from './hooks/useSudoku';
+import { applyTheme } from './utils/storage';
 import { Header } from './components/Header';
 import { Board } from './components/Board';
 import { Controls } from './components/Controls';
@@ -43,6 +44,15 @@ export default function App() {
   } = useSudoku();
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+  // Synchronize theme attribute on mount and setting change
+  useEffect(() => {
+    applyTheme(settings.theme || 'dark');
+  }, [settings.theme]);
+
+  const toggleTheme = () => {
+    updateSettings({ theme: settings.theme === 'light' ? 'dark' : 'light' });
+  };
 
   // Keyboard navigation & inputs
   useEffect(() => {
@@ -166,17 +176,19 @@ export default function App() {
   ]);
 
   return (
-    <div className="flex flex-col min-h-screen min-h-[100dvh] bg-white text-slate-900 justify-between">
+    <div className="flex flex-col min-h-screen min-h-[100dvh] justify-between selection:bg-cyan-500/30">
       {/* Top Header */}
       <Header
         difficulty={difficulty}
         timerSeconds={timerSeconds}
         isPaused={isPaused}
         isLoading={isLoading}
+        theme={settings.theme || 'dark'}
         onSelectDifficulty={startNewGame}
         onTogglePause={() => setIsPaused((prev) => !prev)}
         onRestart={restartCurrentPuzzle}
         onOpenSettings={() => setIsSettingsOpen(true)}
+        onToggleTheme={toggleTheme}
       />
 
       {/* Main Board Area */}
