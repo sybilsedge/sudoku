@@ -22,6 +22,23 @@
     --sudoku-text-error: #f87171;
     --sudoku-text-notes: rgba(103, 232, 249, 0.85);
     --sudoku-text-center: #39ff14;
+
+    /* Minesweeper blueprint tokens */
+    --ms-cell-hidden-bg: rgba(0, 255, 255, 0.08);
+    --ms-cell-hidden-border-top: rgba(0, 255, 255, 0.45);
+    --ms-cell-hidden-border-bottom: rgba(0, 0, 0, 0.6);
+    --ms-cell-revealed-bg: rgba(0, 0, 0, 0.55);
+    --ms-cell-border: rgba(0, 255, 255, 0.16);
+    --ms-mine-exploded-bg: rgba(239, 68, 68, 0.4);
+    --ms-mine-exploded-border: rgba(239, 68, 68, 0.8);
+    --ms-hud-bg: rgba(0, 0, 0, 0.65);
+    --ms-hud-border: rgba(0, 255, 255, 0.35);
+    --ms-hud-label: rgba(0, 255, 255, 0.7);
+    --ms-hud-digit: #00ffff;
+    --ms-hud-digit-negative: #f87171;
+    --ms-hud-btn-bg: rgba(0, 0, 0, 0.45);
+    --ms-hud-btn-border: rgba(0, 255, 255, 0.35);
+    --ms-hud-btn-text: #67e8f9;
   }
 
   [data-theme="light"] {
@@ -41,6 +58,23 @@
     --sudoku-text-error: #dc2626;
     --sudoku-text-notes: #2563eb;
     --sudoku-text-center: #1d4ed8;
+
+    /* Minesweeper blueprint light tokens */
+    --ms-cell-hidden-bg: #e2eafc;
+    --ms-cell-hidden-border-top: #ffffff;
+    --ms-cell-hidden-border-bottom: #94a3b8;
+    --ms-cell-revealed-bg: #ffffff;
+    --ms-cell-border: #bfdbfe;
+    --ms-mine-exploded-bg: #fee2e2;
+    --ms-mine-exploded-border: #ef4444;
+    --ms-hud-bg: #ffffff;
+    --ms-hud-border: #93c5fd;
+    --ms-hud-label: #475569;
+    --ms-hud-digit: #dc2626; /* high-contrast red */
+    --ms-hud-digit-negative: #dc2626;
+    --ms-hud-btn-bg: #ffffff;
+    --ms-hud-btn-border: #bfdbfe;
+    --ms-hud-btn-text: #1d4ed8;
   }
 
   html {
