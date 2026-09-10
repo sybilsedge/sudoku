@@ -35,7 +35,7 @@ export const Header: React.FC<HeaderProps> = ({
   ];
 
   return (
-    <header className="w-full max-w-[480px] mx-auto px-2 sm:px-4 pt-safe pt-2 pb-1">
+    <header className="w-full max-w-[480px] mx-auto px-2 sm:px-4 pt-1 pb-1">
       {/* Top row: Brand HUD, Timer, Quick Actions */}
       <div className="flex items-center justify-between border-b border-cyan-500/20 pb-2 mb-2">
         <div className="flex items-center gap-2">
